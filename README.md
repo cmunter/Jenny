@@ -1,6 +1,6 @@
 ### <img src="docs/jenny_banner.png" width="100%">
 <br/>
-Present the apps you need based on location, device sensors, time of day and special sauce, right in the center of your home screen.
+Jenny will show apps you need, right at the center of the home screen.
 <br/>
 <br/>
 
@@ -9,7 +9,7 @@ Present the apps you need based on location, device sensors, time of day and spe
 <br/>
 <br/>
 ## How does it work?<br/>
-Jenny analyses your app usage patterns by combining your location, the time on the day, sensors using **On-Device Machine Learning**.
+Jenny uses **On-Device Machine Learning** to analyses your app usage patterns. This is done by combining location, the time on the day, connectivity and sensors.
 Apps you need is put in the foreground, right at the center of the home screen. Making it faster and easier to open apps.
 <br/>
 <br/>
@@ -19,15 +19,13 @@ Apps you need is put in the foreground, right at the center of the home screen. 
 <br/>
 ## What is used?<br/>
 WiFi
-- SSID
-- Signal
+- Name of WiFi (SSID) and signal strength
 
 GPS
 - Localization
 
 Bluetooth
-- Connected device
-- Profile
+- Name of connected Bluetooth device and the profile
 
 Date and Time
 - Time of day
@@ -38,7 +36,7 @@ Ambilight
 
 Accelerometer/Screen orientation/Activity recognition
 - Phone is laying on a table - Face up
-- Phone is beeing held in the hand, and the user is standing/sitting, walking, running, car (passenger) or public transport
+- Phone is beeing held in the hand, and the user is laying down, standing/sitting, walking, running, car (passenger) or public transport
 
 Chargning and battery state
 - Battery low
