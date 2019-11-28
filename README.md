@@ -4,6 +4,9 @@ Present the apps you need based on location, device sensors, time of day and spe
 <br/>
 <br/>
 
+<img src="docs/home_screen_01.png" width="40%" align="middle">   <img src="docs/home_screen_02.png" width="40%" align="middle">
+<br/>
+
 ## How does it work?<br/>
 Jenny analyses your app usage patterns by combining your location, the time on the day, sensors using **On-Device Machine Learning**.
 Apps you need is put in the foreground, right at the center of the home screen. Making it faster and easier to open apps.
