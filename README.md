@@ -17,7 +17,7 @@ Apps you need is put in the foreground, right at the center of the home screen. 
 <br/>
 <br/>
 <br/>
-## What is used?<br/>
+## What is used(All is optional)?<br/>
 WiFi
 - Name of WiFi (SSID) and signal strength
 
@@ -42,4 +42,6 @@ Chargning and battery state
 - Battery low
 - is Charging
 
+Notifications
+- Title and description
 
