@@ -4,29 +4,49 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 
 private const val TAG = "DeviceDataCollectorUtils"
 
-class DeviceDataCollectorUtils(context: Context) {
+class DeviceDataCollectorUtils(private val context: Context) {
+
+    private lateinit var headsetPluggedReceiver: BroadcastReceiver
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
 
+    private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+
+    private lateinit var accelerometerSensor: Sensor
+    private lateinit var accelerometerEventListener: SensorEventListener
 
     init {
-        initGpsLocation(context)
+        initHeadsetPlugged()
+        initGpsLocation()
+        initAccelerometer()
+    }
+
+    fun startCollector() {
+        startHeadsetPlugged()
+        startLocationUpdates()
+        startAccelerometer()
     }
 
     fun destroy() {
+        stopHeadsetPlugged()
         stopLocationUpdates()
+        stopAccelerometer()
     }
 
-    fun registerHeadsetPlugged(context: Context) {
-        val headsetPluggedReceiver = object : BroadcastReceiver() {
+    private fun initHeadsetPlugged() {
+        headsetPluggedReceiver = object : BroadcastReceiver() {
             override fun onReceive(contxt: Context?, intent: Intent?) {
                 if(intent?.action===Intent.ACTION_HEADSET_PLUG) {
                     val state = intent.getIntExtra("state", -1)
@@ -34,17 +54,22 @@ class DeviceDataCollectorUtils(context: Context) {
                         0 -> Log.d(TAG, "Headset is unplugged")
                         1 -> Log.d(TAG, "Headset is plugged")
                         else -> Log.e(TAG, "Illegal headset state is")
-
                     }
                 }
             }
         }
+    }
 
+    private fun startHeadsetPlugged() {
         LocalBroadcastManager.getInstance(context).registerReceiver(headsetPluggedReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
     }
 
-    private fun initGpsLocation(context: Context) {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context!!)
+    private fun stopHeadsetPlugged() {
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(headsetPluggedReceiver)
+    }
+
+    private fun initGpsLocation() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
         locationRequest = LocationRequest()
         locationRequest.interval = 1000             // 1 secs
         locationRequest.fastestInterval = 1000      // 1 secs
@@ -61,15 +86,41 @@ class DeviceDataCollectorUtils(context: Context) {
         }
     }
 
-    fun gpsLocation(context: Context) {
+    private fun startLocationUpdates() {
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
-            null /* Looper */
+            null
         )
     }
 
     private fun stopLocationUpdates() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
+
+    private fun initAccelerometer() {
+        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.let {
+
+            accelerometerSensor = it
+
+            accelerometerEventListener = object : SensorEventListener {
+               override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) { }
+
+               override fun onSensorChanged(event: SensorEvent?) {
+                   if(event!=null) {
+                       Log.d(TAG, "Acceleromer ${event.values[0]}, ${event.values[1]}, ${event.values[2]}")
+                   }
+               }
+
+           }
+        }
+    }
+
+    private fun startAccelerometer() {
+        sensorManager.registerListener(accelerometerEventListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL)
+    }
+
+    private fun stopAccelerometer() {
+        sensorManager.unregisterListener(accelerometerEventListener)
     }
 }
