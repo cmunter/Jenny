@@ -8,9 +8,11 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.net.wifi.WifiManager
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
+
 
 private const val TAG = "DeviceDataCollectorUtils"
 
@@ -22,6 +24,7 @@ class DeviceDataCollectorUtils(private val context: Context) {
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
 
+    private var wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
     private lateinit var accelerometerSensor: Sensor
@@ -37,6 +40,7 @@ class DeviceDataCollectorUtils(private val context: Context) {
         startHeadsetPlugged()
         startLocationUpdates()
         startAccelerometer()
+        startWifi()
     }
 
     fun destroy() {
@@ -122,5 +126,17 @@ class DeviceDataCollectorUtils(private val context: Context) {
 
     private fun stopAccelerometer() {
         sensorManager.unregisterListener(accelerometerEventListener)
+    }
+
+    private fun startWifi() {
+        val info = wifiManager.connectionInfo
+
+        val isWiFiConnected = info != null && info.ssid != null && !info.ssid.contentEquals("<unknown ssid>")
+        if (isWiFiConnected) {
+            // Known SSID values: <unknown ssid>
+            val ssidValue = info.ssid.replace("\"".toRegex(), "")
+            val signalLevel = info.rssi
+            Log.d(TAG, "WiFi $ssidValue, $signalLevel")
+        }
     }
 }
