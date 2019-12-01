@@ -38,14 +38,14 @@ class DeviceDataCollectorUtils(private val context: Context) {
 
     fun startCollector() {
         startHeadsetPlugged()
-        startLocationUpdates()
+        startGpsLocation()
         startAccelerometer()
         startWifi()
     }
 
     fun destroy() {
         stopHeadsetPlugged()
-        stopLocationUpdates()
+        stopGpsLocation()
         stopAccelerometer()
     }
 
@@ -57,7 +57,7 @@ class DeviceDataCollectorUtils(private val context: Context) {
                     when(state) {
                         0 -> Log.d(TAG, "Headset is unplugged")
                         1 -> Log.d(TAG, "Headset is plugged")
-                        else -> Log.e(TAG, "Illegal headset state is")
+                        else -> Log.e(TAG, "Illegal headset state")
                     }
                 }
             }
@@ -90,7 +90,7 @@ class DeviceDataCollectorUtils(private val context: Context) {
         }
     }
 
-    private fun startLocationUpdates() {
+    private fun startGpsLocation() {
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
@@ -98,7 +98,7 @@ class DeviceDataCollectorUtils(private val context: Context) {
         )
     }
 
-    private fun stopLocationUpdates() {
+    private fun stopGpsLocation() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
