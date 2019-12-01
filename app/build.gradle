@@ -37,4 +37,5 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
     implementation "androidx.preference:preference:1.1.0"
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 }
