@@ -18,4 +18,8 @@ class SnapshotPersister(applicationContext: Context) {
         db.snapshotDao().insertAll(snapshot)
     }
 
+    fun findAll(appId: String): List<Snapshot> {
+        return db.snapshotDao().loadAllByAppId(appId)
+    }
+
 }
