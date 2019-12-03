@@ -16,7 +16,7 @@ import com.google.android.gms.location.*
 
 private const val TAG = "DeviceDataCollectorUtils"
 
-class DeviceDataCollectorUtils(private val context: Context) {
+class DeviceDataCollectorUtils(private val context: Context, private val activeCollectors: List<CollectorType>) {
 
     private lateinit var headsetPluggedReceiver: BroadcastReceiver
 
@@ -30,23 +30,28 @@ class DeviceDataCollectorUtils(private val context: Context) {
     private lateinit var accelerometerSensor: Sensor
     private lateinit var accelerometerEventListener: SensorEventListener
 
+    private fun activeHeadsetCollector() = activeCollectors.contains(CollectorType.HEADSET)
+    private fun activeGpsLocationCollector() = activeCollectors.contains(CollectorType.GPS_LOCATION)
+    private fun activeAccelerometerCollector() = activeCollectors.contains(CollectorType.ACCELEROMETER)
+    private fun activeWifiCollector() = activeCollectors.contains(CollectorType.WIFI)
+
     init {
-        initHeadsetPlugged()
-        initGpsLocation()
-        initAccelerometer()
+        if (activeHeadsetCollector()) initHeadsetPlugged()
+        if (activeGpsLocationCollector()) initGpsLocation()
+        if (activeAccelerometerCollector()) initAccelerometer()
     }
 
     fun startCollector() {
-        startHeadsetPlugged()
-        startGpsLocation()
-        startAccelerometer()
-        startWifi()
+        if (activeHeadsetCollector()) startHeadsetPlugged()
+        if (activeGpsLocationCollector()) startGpsLocation()
+        if (activeAccelerometerCollector()) startAccelerometer()
+        if (activeWifiCollector()) startWifi()
     }
 
     fun destroy() {
-        stopHeadsetPlugged()
-        stopGpsLocation()
-        stopAccelerometer()
+        if (activeHeadsetCollector()) stopHeadsetPlugged()
+        if (activeGpsLocationCollector()) stopGpsLocation()
+        if (activeAccelerometerCollector()) stopAccelerometer()
     }
 
     private fun initHeadsetPlugged() {
